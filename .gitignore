@@ -1,0 +1,19 @@
+# Python virtual environments
+.venv/
+venv/
+
+# Conda/mamba environments (if created locally in repo)
+env/
+.env/
+
+# Snakemake working directory
+.snakemake/
+
+# Editor/OS cruft
+.DS_Store
+*.swp
+*.swo
+
+# Generated results (can be recreated by Snakemake)
+results/
+
