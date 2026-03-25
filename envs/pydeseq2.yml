@@ -1,0 +1,8 @@
+name: pydeseq2-env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pydeseq2
+  - pandas
+

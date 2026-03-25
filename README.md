@@ -1,90 +1,44 @@
 # Snakemake Local Example
 
-This repository provides a very small example of running a Snakemake
-workflow **locally** that calls Python and R code to generate a simple
-visualization.
+Minimal Snakemake workflow that:
 
-The workflow:
+- runs **PyDESeq2** on real RNA-seq counts from GSE240671
+- uses **R + ggpubr** to make an MA-plot and a top-gene boxplot
 
-- **Python**: generate a mock gene expression count table (TSV).
-- **R + ggpubr**: visualize the mock counts as a boxplot with a p-value.
+## Setup
 
-## Table of Contents
-
-- [Project Background](#project-background)
-- [Install & Setup](#install--setup)
-- [Usage](#usage)
-- [Directory Structure](#directory-structure)
-
-## Project Background
-
-This example is intended for teaching and local experimentation. It is kept
-intentionally simple so that you can focus on the Snakemake concepts:
-
-- how rules declare input and output files,
-- how Snakemake tracks dependencies, and
-- how to integrate small Python and R scripts.
-
-## Install & Setup
-
-You need:
-
-- Python (3.9+ recommended),
-- R (any modern version),
-- Snakemake installed in some environment, and
-- the R package `ggpubr` (plus its dependencies such as `ggplot2`) for
-  the visualization rule.
-
-### Create the mamba/conda environment
-
-This repo includes an `environment.yml` that installs Snakemake, base R,
-and `r-ggpubr` for visualization:
+Create an environment with Snakemake and Conda (needed for `--use-conda`):
 
 ```sh
 mamba env create -f environment.yml
 mamba activate snakemake-example
 ```
 
-If you use `conda` instead of `mamba`, replace `mamba` with `conda`.
+This gives you a shell where you can run `snakemake`. When the workflow
+runs, Snakemake will create the Python and R environments it needs from
+the small files in `envs/`.
 
-If you do not already have `mamba` installed, see the
-[Mamba installation guide](https://mamba.readthedocs.io/en/latest/installation.html),
-then return to the [Install & Setup](#install--setup) section here.
+## Run the workflow
 
-
-## Usage
-
-From the top level of this repository:
+From the repo root:
 
 ```sh
-snakemake -j 1
+snakemake --use-conda -j 1
 ```
 
-Snakemake will:
+To have Snakemake use mamba (faster) when creating rule envs, add
+`--conda-frontend mamba`.
 
-1. Use Python to generate a mock counts table in `results/mock_counts.tsv`.
-2. Use R and `ggpubr` to generate a mock counts boxplot in
-   `results/mock_counts_boxplot.png`.
+This will write:
 
-You can re-run the command and Snakemake will only recompute steps whose
-inputs have changed.
+- a DE results table for GSE240671
+- an MA-plot PNG and a top-gene boxplot PNG
 
-## Directory Structure
+## Files in this example
 
-```sh
-$ tree -a snakemake-example/
-snakemake-example/
-├── README.md
-├── Snakefile
-├── environment.yml
-├── requirements.txt
-├── results
-│   ├── mock_counts.tsv            # created by Snakemake (Python step)
-│   └── mock_counts_boxplot.png    # created by Snakemake (R + ggpubr step)
-└── scripts
-    ├── generate_mock_counts.py
-    └── visualize_counts.R
-```
-
-The files under `results/` are created by Snakemake and can be deleted
-and regenerated at any time.
+- `Snakefile` – defines the rules.
+- `config.yml` – small config with data paths.
+- `envs/` – tiny Conda env files used by each rule.
+- `scripts/` – Python and R scripts called by the rules.
+- `results/` – output folder created by Snakemake.
+- `logs/` – text logs and simple timing info for each rule.
